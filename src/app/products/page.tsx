@@ -1,11 +1,37 @@
+import Link from "next/link"
+
 export default function Products() {
+  const products = [
+    {
+      id: 1,
+      name: "Mobile"
+    },
+    {
+      id: 2,
+      name: "Notebook"
+    },
+    {
+      id: 3,
+      name: "Tablet"
+    },
+  ]
+  
   return (
     <div>
       <h1>Our Products</h1>
-      <h2>Product 1</h2>
-      <h2>Product 2</h2>
-      <h2>Product 3</h2>
+      {products.map(product => (
+        <h2>
+          <Link href={`/products/${product.id}`} key={product.id}>
+            ID: {product.id} - Name: {product.name}
+          </Link>
+        </h2>
+      ))}
       <p>Explore our range of products designed to meet your needs.</p>
+      <h2>
+        <Link href="/">
+          Home
+        </Link>
+      </h2>
     </div>
   )
 }

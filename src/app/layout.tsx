@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <header
+      {/* <header
         style={{
           backgroundColor: "lightblue",
           padding: "1rem",
@@ -35,11 +35,11 @@ export default function RootLayout({
         }}
       >
         <p>Header</p>
-      </header>
+      </header> */}
       <body>
         {children}
       </body>
-      <footer 
+      {/* <footer 
         style={{
           backgroundColor: "lightGray",
           padding: "1rem",
@@ -47,7 +47,7 @@ export default function RootLayout({
         }}
       >
         <p>Footer</p>
-      </footer>
+      </footer> */}
     </html>
   );
 }

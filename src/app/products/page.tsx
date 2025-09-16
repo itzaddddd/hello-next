@@ -1,6 +1,12 @@
 import Link from "next/link"
 
-export default function Products() {
+export default async function Products() {
+  await new Promise(resolve => {
+    setTimeout(() => {
+      resolve("intentional delay")
+    }, 1000);
+  })
+
   const products = [
     {
       id: 1,

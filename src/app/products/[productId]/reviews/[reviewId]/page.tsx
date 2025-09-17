@@ -1,3 +1,7 @@
+function getRandomInt(count: number) {
+  return Math.floor(Math.random() * count);
+}
+
 export default function ProductReview({
   params
 }: { 
@@ -7,6 +11,10 @@ export default function ProductReview({
   }
 }) {
   const { productId, reviewId } = params;
+  const random = getRandomInt(2);
+  if (random === 1) {
+    throw new Error("Error loading review")
+  }
 
   return (
     <div>

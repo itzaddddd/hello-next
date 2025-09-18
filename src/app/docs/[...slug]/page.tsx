@@ -17,7 +17,7 @@ export default async function Docs({ params }: { params: Promise<{ slug: string[
   return (
     <div>
       <h1>Documentation</h1>
-      <p>Let's see the documentation for this project</p>
+      <p>See the documentation for this project</p>
     </div>
   )
 }

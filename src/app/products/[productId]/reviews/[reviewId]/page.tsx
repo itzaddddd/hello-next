@@ -2,19 +2,21 @@ function getRandomInt(count: number) {
   return Math.floor(Math.random() * count);
 }
 
-export default function ProductReview({
+export default async function ProductReview({
   params
 }: { 
-  params: { 
+  params: Promise<{ 
     productId: string, 
     reviewId: string 
-  }
+  }>
 }) {
-  const { productId, reviewId } = params;
-  const random = getRandomInt(2);
-  if (random === 1) {
-    throw new Error("Error loading review")
-  }
+  const { productId, reviewId } = await params;
+
+  // const random = getRandomInt(2);
+  // if (random === 1) {
+  //   throw new Error("Error loading review")
+  // }
+
 
   return (
     <div>

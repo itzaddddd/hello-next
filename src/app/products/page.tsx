@@ -26,11 +26,9 @@ export default async function Products() {
     <div>
       <h1>Our Products</h1>
       {products.map(product => (
-        <h2>
-          <Link href={`/products/${product.id}`} key={product.id}>
-            ID: {product.id} - Name: {product.name}
-          </Link>
-        </h2>
+        <Link href={`/products/${product.id}`} key={`key-${product.id}`}>
+          ID: {product.id} - Name: {product.name}
+        </Link>
       ))}
       <p>Explore our range of products designed to meet your needs.</p>
       <h2>

@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 }
 
 export default function About() {
+  console.log("about page server component")
   return (
     <div>
       <h1>About Us</h1>

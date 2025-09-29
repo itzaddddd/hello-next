@@ -1,4 +1,5 @@
 // import { Metadata } from 'next';
+export const dynamicParams = false;
 
 type props = { 
   params: Promise<{ productId: string }>

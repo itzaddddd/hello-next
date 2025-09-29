@@ -1,3 +1,6 @@
+import { Product } from "@/components/product";
+import { Review } from "@/components/review";
+import { Suspense } from "react";
 import Link from "next/link"
 
 export default async function Products() {
@@ -36,6 +39,13 @@ export default async function Products() {
           Home
         </Link>
       </h2>
+      <h1>Product reviews</h1>
+      <Suspense fallback={<p>Loading huge product...</p>}>
+        <Product />
+      </Suspense>
+      <Suspense fallback={<p>Loading many reviews...</p>}>
+        <Review />
+      </Suspense>
     </div>
   )
 }

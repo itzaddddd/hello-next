@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ErrorWrapper } from "./error-wrapper";
 import "./globals.css";
@@ -28,29 +29,31 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <header
-          style={{
-            backgroundColor: "lightblue",
-            padding: "1rem",
-            "textAlign": "center"
-          }}
-        >
-          <p>Header</p>
-        </header>
-        <ErrorWrapper>
-          {children}
-        </ErrorWrapper>
-        <footer 
-          style={{
-            backgroundColor: "lightGray",
-            padding: "1rem",
-            textAlign: "center"
-          }}
-        >
-          <p>Footer</p>
-        </footer>
-      </body>
+      <ThemeProvider>
+        <body>
+          <header
+            style={{
+              backgroundColor: "lightblue",
+              padding: "1rem",
+              "textAlign": "center"
+            }}
+          >
+            <p>Header</p>
+          </header>
+          <ErrorWrapper>
+            {children}
+          </ErrorWrapper>
+          <footer 
+            style={{
+              backgroundColor: "lightGray",
+              padding: "1rem",
+              textAlign: "center"
+            }}
+          >
+            <p>Footer</p>
+          </footer>
+        </body>
+      </ThemeProvider>
     </html>
   );
 }

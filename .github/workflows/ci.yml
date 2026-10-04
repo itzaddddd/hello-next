@@ -91,3 +91,10 @@ jobs:
       - name: Pull request check completed
         if: github.event_name == 'pull_request'
         run: echo "Pull request check completed"
+  deploy:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start Deploy on ${{ github.ref }}
+        run: echo "Deployment is starting"

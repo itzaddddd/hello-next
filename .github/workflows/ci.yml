@@ -84,3 +84,10 @@ jobs:
             .next/prerender-manifest.json
           include-hidden-files: true
           retention-days: 7
+      - name: Show build result
+        if: always()
+        run: echo "Build job has finished"
+
+      - name: Pull request check completed
+        if: github.event_name == 'pull_request'
+        run: echo "Pull request check completed"

@@ -14,11 +14,22 @@ on:
 jobs:
   lint:
     name: Line (Node.js ${{ matrix.node-version }})
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
+      max-parallel: 3
       matrix:
-        node-version: [20, 22, 24]
+        os: [ubunto-latest, window-latest]
+        node-version: [20, 22]
+
+        exclude:
+          - os: windows-latest
+            node-version: 20
+        include:
+          - os: ubuntu-latest
+            node-version: 24
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
 
     steps:
       - name: Checkout repository

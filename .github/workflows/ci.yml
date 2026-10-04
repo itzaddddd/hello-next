@@ -56,3 +56,14 @@ jobs:
 
       - name: Build application
         run: npm run build
+
+      - name: Upload build metadata
+        uses: actions/upload-artifact@v6
+        with:
+          name: next-build-metadata
+          path: |
+            .next/build-manifest.json
+            .next/routes-manifest.json
+            .next/prerender-manifest.json
+          include-hidden-files: true
+          retention-days: 7

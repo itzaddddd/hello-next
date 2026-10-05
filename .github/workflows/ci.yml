@@ -62,11 +62,15 @@ jobs:
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
       CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
 
+    outputs:
+      node-version: ${{ steps.setup-project.outputs.installed-node-version }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
       - name: Setup project
+        id: setup-project
         uses: ./.github/actions/setup-node-project
         with:
           node-version: 24
@@ -78,6 +82,8 @@ jobs:
 
       # - name: Install dependencies
       #   run: npm ci
+      - name: Show Node.js version
+        run: echo "Installed ${{ steps.setup-project.outputs.installed-node-version }}"
 
       - name: Apply database migrations
         run: npx prisma migrate deploy
@@ -102,6 +108,15 @@ jobs:
       - name: Pull request check completed
         if: github.event_name == 'pull_request'
         run: echo "Pull request check completed"
+  
+  report:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show build information
+        run: echo "Build used Node.js ${{ needs.build.outputs.node-version }}"
+
   deploy:
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

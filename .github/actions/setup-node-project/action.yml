@@ -7,6 +7,11 @@ inputs:
     required: false
     default: "24"
 
+outputs:
+  installed-node-version:
+    description: Installed Node.js version
+    value: ${{ steps.node-info.outputs.version }}
+
 runs:
   using: composite
 
@@ -16,6 +21,11 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         cache: npm
+    
+    - name: Read installed Node.js version
+      id: node-info
+      shell: bash
+      run: echo "version=$(node --version)" >> "$GITHUB_OUTPUT"
     
     - name: Install dependencies
       shell: bash

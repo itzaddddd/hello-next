@@ -1,0 +1,138 @@
+name: Reusable Next.js CI
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version
+        required: false
+        type: string
+        default: "24"
+    
+    secrets:
+      clerk-publishable-key:
+        required: true
+      clerk-secret-key:
+        required: true
+
+jobs:
+  lint:
+    name: Lint (Node.js ${{ matrix.node-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node-version: [20, 22]
+        experimental: [false]
+
+        exclude:
+          - os: windows-latest
+            node-version: 20
+        include:
+          - os: ubuntu-latest
+            node-version: 24
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup project
+        uses: ./.github/actions/setup-node-project
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Check lint
+        run: npm run lint
+  
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+
+    outputs:
+      node-version: ${{ steps.setup-project.outputs.installed-node-version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup project
+        id: setup-project
+        uses: ./.github/actions/setup-node-project
+        with:
+          node-version: ${{ inputs.node-version }}
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v7
+      #   with:
+      #     node-version: 24
+      #     cache: npm
+
+      # - name: Install dependencies
+      #   run: npm ci
+      - name: Show Node.js version
+        run: echo "Installed ${{ steps.setup-project.outputs.installed-node-version }}"
+
+      - name: Apply database migrations
+        run: npx prisma migrate deploy
+
+      - name: Build application
+        run: npm run build
+
+      - name: Upload build metadata
+        uses: actions/upload-artifact@v6
+        with:
+          name: next-build-metadata
+          path: |
+            .next/build-manifest.json
+            .next/routes-manifest.json
+            .next/prerender-manifest.json
+          include-hidden-files: true
+          retention-days: 7
+      - name: Show build result
+        if: always()
+        run: echo "Build job has finished"
+
+      - name: Pull request check completed
+        if: github.event_name == 'pull_request'
+        run: echo "Pull request check completed"
+  
+  report:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show build information
+        run: echo "Build used Node.js ${{ needs.build.outputs.node-version }}"
+
+  deploy:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start Deploy on ${{ github.ref }}
+        run: echo "Deployment is starting"
+
+  create-tag:
+    name: Create test tag
+    needs: deploy
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+            
+      - name: Create and push test tag
+        run: |
+          TAG="ci-test-${{ github.run_id }}-${{ github.run_attempt }}"
+          git tag "$TAG"
+          git push origin "$TAG"

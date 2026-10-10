@@ -29,18 +29,42 @@ jobs:
     permissions:
       contents: write
 
+    outputs:
+      tag: ${{ steps.tag.outputs.name }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
             
       - name: Create and push test tag
+        id: tag
         run: |
-          TAG="ci-test-${{ github.run_id }}-${{ github.run_attempt }}"
+          TAG="v0.1.${{ github.run_attempt }}"
           git tag "$TAG"
           git push origin "$TAG"
+          echo "name=$TAG" >> "$GITHUB_OUTPUT"
+  
+  create-release:
+    needs: create-tag
+    runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
+    steps:
+      - name: Create Github Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.create-tag.outputs.tag }}
+        run: |
+          gh release create "$TAG" \
+            --repo "${{ github.repository }}" \
+            --verify-tag \
+            --generate-notes \
+            --title "$TAG"
+  
   deploy:
-      needs: run-ci
+      needs: create-release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       runs-on: ubuntu-latest
       steps:

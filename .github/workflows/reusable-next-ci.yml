@@ -10,9 +10,9 @@ on:
         default: "24"
     
     secrets:
-      clerk-publishable-key:
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
         required: true
-      clerk-secret-key:
+      CLERK_SECRET_KEY:
         required: true
 
 jobs:

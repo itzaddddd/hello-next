@@ -18,8 +18,8 @@ jobs:
       node-version: "24"
 
     secrets:
-      clerk-publishable-key: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-      clerk-secret-key: ${{ secrets.CLERK_SECRET_KEY }}
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
   create-tag: 
     name: Create test tag
     needs: run-ci

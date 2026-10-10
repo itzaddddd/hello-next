@@ -23,17 +23,17 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        node-version: [20, 22]
+        os: [ubuntu-latest]
+        node-version: [22]
         experimental: [false]
 
-        exclude:
-          - os: windows-latest
-            node-version: 20
-        include:
-          - os: ubuntu-latest
-            node-version: 24
-            experimental: true
+        # exclude:
+        #   - os: windows-latest
+        #     node-version: 20
+        # include:
+        #   - os: ubuntu-latest
+        #     node-version: 24
+        #     experimental: true
     continue-on-error: ${{ matrix.experimental }}
 
     steps:

@@ -20,3 +20,29 @@ jobs:
     secrets:
       clerk-publishable-key: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
       clerk-secret-key: ${{ secrets.CLERK_SECRET_KEY }}
+  create-tag: 
+    name: Create test tag
+    needs: run-ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+            
+      - name: Create and push test tag
+        run: |
+          TAG="ci-test-${{ github.run_id }}-${{ github.run_attempt }}"
+          git tag "$TAG"
+          git push origin "$TAG"
+
+  deploy:
+      needs: run-ci
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Start Deploy on ${{ github.ref }}
+          run: echo "Deployment is starting" 

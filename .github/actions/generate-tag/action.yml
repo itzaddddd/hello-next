@@ -1,0 +1,16 @@
+name: Generate release tag
+description: Generate a release tag from a prefix and workflow run number
+
+inputs:
+  prefix:
+    description: Prefix added before the run number
+    required: false
+    default: "v0.1."
+
+outputs:
+  tag:
+    description: Generated tag name
+
+runs:
+  using: node24
+  main: dist/index.js

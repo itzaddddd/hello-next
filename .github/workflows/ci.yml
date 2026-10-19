@@ -30,19 +30,35 @@ jobs:
       contents: write
 
     outputs:
-      tag: ${{ steps.tag.outputs.name }}
+      tag: ${{ steps.tag.outputs.tag }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-            
-      - name: Create and push test tag
-        id: tag
+
+      - name: Setup Node.js for custom action
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      
+      - name: Bundle generate-tag action
+        working-directory: .github/actions/generate-tag
         run: |
-          TAG="v0.1.${{ github.run_attempt }}"
+          npm ci
+          npm run build
+          
+      - name: Generate release tag
+        id: tag
+        uses: ./.github/actions/generate-tag
+        with:
+          prefix: "v0.1."
+
+      - name: Create and push test tag
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
           git tag "$TAG"
           git push origin "$TAG"
-          echo "name=$TAG" >> "$GITHUB_OUTPUT"
   
   create-release:
     needs: create-tag

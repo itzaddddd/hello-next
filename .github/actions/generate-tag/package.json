@@ -1,0 +1,16 @@
+{
+  "name": "generate-tag-action",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "rollup --config"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "29.0.3",
+    "@rollup/plugin-node-resolve": "16.0.3",
+    "rollup": "^4.0.0"
+  }
+}

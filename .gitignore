@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/.github/actions/**/node_modules/
+/.github/actions/**/dist/
 /.pnp
 .pnp.*
 .yarn/*
